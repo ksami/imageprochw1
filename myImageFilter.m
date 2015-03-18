@@ -3,15 +3,20 @@ function [img1] = myImageFilter(img0, h)
 % Performs convolution of filter matrix h on the greyscale image img0 
 % and returns the result img1
 
+%convert everything to double type
+img0 = im2double(img0);
+h = im2double(h);
+
 
 % Output matrix %
-img1 = zeros(size(img0), 'uint8');
+img1 = zeros(size(img0));
 
 
 % Create a padded version of img0 %
 
 %flip kernel both horizontally and vertically
-kernel = h';
+%kernel = h';
+kernel = h;
 
 [rowk, colk] = size(kernel);
 windrowk = floor(rowk/2);
@@ -27,18 +32,21 @@ paddedImg0 = padarray(img0, [windrowk windcolk], 'replicate');
 for i=1+windrowk:rowp-windrowk
     for j=1+windcolk:colp-windcolk
         
-        weightedAvg = 0;
+        weightedSum = 0;
         
         %iterate through window of kernel size in padded image
         for m=-windrowk:windrowk
             for n=-windcolk:windcolk
-                weightedAvg = weightedAvg + (kernel(m+windrowk+1,n+windcolk+1) * paddedImg0(i+m,j+n));
+                weightedSum = weightedSum + (kernel(m+windrowk+1,n+windcolk+1) * paddedImg0(i+m,j+n));
             end
         end
         
-        img1(i-windrowk,j-windcolk) = weightedAvg;
+        img1(i-windrowk,j-windcolk) = weightedSum;
                 
     end
 end
+
+%output uint8
+img1 = im2uint8(img1);
 
 end
