@@ -7,13 +7,11 @@ function [H] = myHoughTransform(Im, threshold, rhoRes, thetaRes)
 % of votes for all the possible lines passing through the image.
 
 rangeTheta = 0:thetaRes:pi;
-%rangeRho = [0:rhoRes:100];
 
-[row col] = size(Im);
-H = zeros(((row+col)/rhoRes)+row+col, length(rangeTheta)+1);
+[row, col] = size(Im);
+H = zeros((2*(row+col))/rhoRes, (pi/thetaRes)+1);
 
-rhoOffset = row+col+1;
-thetaOffset = 1;
+rhoOffset = row+col;
 
 for y=1:row
     for x=1:col
@@ -24,10 +22,9 @@ for y=1:row
             for theta=rangeTheta
                 rho = x*sin(theta) - y*cos(theta);  % -(row+col)<rho<row+col, 0<theta<pi
                 
-                rho = floor(rho/rhoRes + rhoOffset);
-                thet = floor(theta/thetaRes + thetaOffset);
+                rho = floor((rho + rhoOffset)/rhoRes) + 1;  % ((-(row+col)+(row+col))/rhoRes) +1 == 1<rho<((2*(row+col))/rhoRes) +1
+                thet = floor(theta/thetaRes) + 1;  % 1<theta<(theta/thetaRes)+1
                 H(rho, thet) = H(rho, thet) + 1;
-                %H(rho+rhoOffset,floor(theta*thetaScale+thetaOffset)) = H(rho+rhoOffset,floor(theta*thetaScale+thetaOffset)) + 1;
             end
         end
     end
