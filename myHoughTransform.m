@@ -22,7 +22,7 @@ for y=1:row
             %calculate rho value for each theta value
             %increase vote count at every rho-theta pair
             for theta=rangeTheta
-                rho = x*sin(theta) + y*cos(theta);  % -(row+col)<rho<row+col, 0<theta<pi
+                rho = x*sin(theta) - y*cos(theta);  % -(row+col)<rho<row+col, 0<theta<pi
                 
                 rho = floor(rho/rhoRes + rhoOffset);
                 thet = floor(theta/thetaRes + thetaOffset);
