@@ -9,7 +9,7 @@ function [H] = myHoughTransform(Im, threshold, rhoRes, thetaRes)
 rangeTheta = 0:thetaRes:pi;
 
 [row, col] = size(Im);
-H = zeros((2*(row+col))/rhoRes, (pi/thetaRes)+1);
+H = zeros(((2*(row+col))/rhoRes)+1, (pi/thetaRes)+1);
 
 rhoOffset = row+col;
 
