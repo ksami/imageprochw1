@@ -35,10 +35,10 @@ for i=1:row
         end
     end
 end
-imshow(Ix);
-pause;
-imshow(Iy);
-pause;
+% imshow(Ix);
+% pause;
+% imshow(Iy);
+% pause;
 
 % Non-maximum Suppression %
 for i=1:row
