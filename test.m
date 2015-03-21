@@ -15,6 +15,15 @@ pause;
 [Im, Io, Ix, Iy] = myEdgeFilter(img, sigma);
 H = myHoughTransform(Im, threshold, rhoRes, thetaRes);
 [lineRho, lineTheta] = myHoughLines(H, rhoRes, thetaRes, nLines);
+lines = myHoughLineSegments(lineRho, lineTheta, Im, threshold);
+
+img2 = img;
+for j=1:numel(lines)
+   img2 = drawLine(img2, lines(j).start, lines(j).end); 
+end
+
+imshow(img2);
+pause;
 
 % gaussKernel = fspecial('gaussian', [3 3], 2);
 % smooth = imfilter(img, gaussKernel, 'replicate');
