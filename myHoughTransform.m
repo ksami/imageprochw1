@@ -15,7 +15,7 @@ rhoOffset = row+col;
 
 for y=1:row
     for x=1:col
-        %based on threshold
+        %based on threshold, Im must be double type
         if(Im(y,x) > threshold)
             %calculate rho value for each theta value
             %increase vote count at every rho-theta pair
@@ -23,7 +23,7 @@ for y=1:row
                 rho = x*sin(theta) - y*cos(theta);  % -(row+col)<rho<row+col, 0<theta<pi
                 
                 rho = floor((rho + rhoOffset)/rhoRes) + 1;  % ((-(row+col)+(row+col))/rhoRes) +1 == 1<rho<((2*(row+col))/rhoRes) +1
-                thet = floor(theta/thetaRes) + 1;  % 1<theta<(theta/thetaRes)+1
+                thet = floor(theta/thetaRes) + 1;  % 1<theta<(pi/thetaRes)+1
                 H(rho, thet) = H(rho, thet) + 1;
             end
         end
