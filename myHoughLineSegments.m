@@ -27,7 +27,7 @@ for i=1:nLines
     isEndFound = false;  %probably redundant
     gapCount = 0;
     
-    %//TODO: what to do if theta==pi/2? y always NaN, lines get no val;
+    %what to do if theta==pi/2? y always NaN, lines get no val;
     %separate case, iterate using y instead, is a vertical line
     %save cases
     if(cos(theta)>-0.001 && cos(theta)<0.001)
@@ -51,18 +51,6 @@ for i=1:nLines
             %should be true while theoretical line is on real line but
             %there are gaps
             %instead of Im(y,x)~=0
-%             if(Im(y,x)>threshold)                %//TODO: stopped here, need reconsider ending condition
-%                 if(isStartFound==false)
-%                     lines(i).start = [y x];
-%                     isStartFound = true;
-%                 else
-%                     if(isEndFound==false)
-%                         lines(i).end = [y x];
-%                     end
-%                 end
-%             else
-%                 isEndFound = true;
-%             end
             if(Im(y,x)>threshold)
                 if(isStartFound==false)
                     lines(i).start = [y x];
@@ -80,10 +68,6 @@ for i=1:nLines
             end
               
         end
-        
-%         if(isStartFound && isEndFound)
-%             break;
-%         end
         
     end
     
@@ -116,20 +100,7 @@ for j=1:idx
         if(x>0 && x<col)
     
             %should be true while theoretical line is on real line
-            %instead of Im(y,x)~=0
-%             if(Im(y,x)>threshold)
-%                 if(isStartFound==false)
-%                     lines(failedCalc(j)).start = [y x];
-%                     isStartFound = true;
-%                 else
-%                     if(isEndFound==false)
-%                         lines(failedCalc(j)).end = [y x];
-%                     end
-%                 end
-%             else
-%                 isEndFound = true;
-%             end
-            
+            %instead of Im(y,x)~=0            
             if(Im(y,x)>threshold)
                 if(isStartFound==false)
                     lines(failedCalc(j)).start = [y x];
@@ -145,11 +116,7 @@ for j=1:idx
                 end
             end
               
-        end
-        
-%         if(isStartFound && isEndFound)
-%             break;
-%         end
+        end        
         
     end
     
