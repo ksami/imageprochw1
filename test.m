@@ -1,5 +1,5 @@
 % path = 'orbiicon.jpg';
-path = '../data/img02.jpg';
+path = '../data/img01.jpg';
 %path = 'test.jpg';
 
 sigma     = 2;
