@@ -1,0 +1,25 @@
+### Extra parameters used
+- gapThreshold of 5 to denote when how many blank pixels to consider before deciding to end the line segment in myHoughLineSegments.m
+- lineThreshold of 20 to denote how long a line segment should be before being considered for drawing in myHoughLineSegments.m
+
+### Did your code work well on all the image with a single set of parameters?
+No it did not. Parameters had to be changed to fit different images.
+
+### How did the optimal set of parameters vary with images?
+For highly textured images, sigma should be increased to further blur the image and ignore textures.
+For images with a lower contrast edge, threshold could be decreased to find the edge.
+
+### Which step of the algorithm causes the most problems?
+Pruning lines into line segments caused the most problems because there are many cases to consider when pruning lines. Also, the algorithm to transform values back from Hough space into y-x space taking into account the offset was confusing and occasionally produced a difficult to handle NaN.
+
+### Did you find any changes you could make to your code or algorithm that improved performance?
+- Conditions to break out of a loop when it is clear the goal has been met eg. when finding line segments, the algorithm breaks out of the loop when it meets a large gap signalling the end of the line.
+- Decomposing linear filters to increase efficiency of the algorithm.
+
+### How well your code worked on different images
+The code worked well for images with a distinct and high contrast edge but worked poorly for images with gradients and soft shadows and highly textured surfaces.
+
+### What effect the parameters had
+- sigma controls how much the Gaussian filter blurs/smooths the image
+- threshold decides which values are noise
+- rhoRes and thetaRes control how accurate the lines found are vs runtime and memory considerations
