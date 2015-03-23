@@ -1,14 +1,8 @@
+function houghScript(sigma, threshold, rhoRes, thetaRes, nLines, exptNo)
+
 datadir     = '../data';    %the directory containing the images
 resultsdir  = '../results'; %the directory for dumping results
-%parameters
 
-sigma     = 2;
-threshold = 0.03;
-rhoRes    = 2;
-thetaRes  = pi/180;
-nLines    = 20;
-
-%end of parameters
 
 imglist = dir(sprintf('%s/*.jpg', datadir));
 
@@ -35,13 +29,13 @@ for i = 1:numel(imglist)
     lines = myHoughLineSegments(lineRho, lineTheta, Im, threshold);
     
     %everything below here just saves the outputs to files%
-    fname = sprintf('%s/%s_01edge.pgm', resultsdir, imgname);
+    fname = sprintf('%s/%d/%s_01edge.pgm', resultsdir, exptNo, imgname);
     imwrite(sqrt(Im/max(Im(:))), fname);
-    fname = sprintf('%s/%s_02threshold.pgm', resultsdir, imgname);
+    fname = sprintf('%s/%d/%s_02threshold.pgm', resultsdir, exptNo, imgname);
     imwrite(Im > threshold, fname);
-    fname = sprintf('%s/%s_03hough.pgm', resultsdir, imgname);
+    fname = sprintf('%s/%d/%s_03hough.pgm', resultsdir, exptNo, imgname);
     imwrite(H/max(H(:)), fname);
-    fname = sprintf('%s/%s_04lines.pgm', resultsdir, imgname);
+    fname = sprintf('%s/%d/%s_04lines.pgm', resultsdir, exptNo, imgname);
     
     img2 = img;
     for j=1:numel(lines)

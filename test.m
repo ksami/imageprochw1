@@ -1,16 +1,19 @@
 % path = 'orbiicon.jpg';
-path = '../data/img01.jpg';
+path = '../data/img03.jpg';
 %path = 'test.jpg';
 
-sigma     = 2;
+sigma     = 1;
 threshold = 0.03;
 rhoRes    = 2;
 thetaRes  = pi/180;
 nLines    = 20;
 
 img = imread(path);
-imshow(img);
-pause;
+if (ndims(img) == 3)
+    img = rgb2gray(img);
+end
+% imshow(img);
+% pause;
 
 [Im, Io, Ix, Iy] = myEdgeFilter(img, sigma);
 H = myHoughTransform(Im, threshold, rhoRes, thetaRes);
@@ -23,7 +26,6 @@ for j=1:numel(lines)
 end
 
 imshow(img2);
-pause;
 
 % gaussKernel = fspecial('gaussian', [3 3], 2);
 % smooth = imfilter(img, gaussKernel, 'replicate');

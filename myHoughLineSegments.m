@@ -5,7 +5,9 @@ function [lines] = myHoughLineSegments(lineRho, lineTheta, Im, threshold)
 % location of each point
 
 %how many blank pixels before ending the line
-gapThreshold = 2;
+gapThreshold = 5;
+%how long should line be before being really considered a line segment
+lineThreshold = 20;
 
 % Generate lines in y-x space %
 [row, col] = size(Im);
@@ -23,9 +25,11 @@ for i=1:nLines
     rho = lineRho(i);
     theta = lineTheta(i);
     
+    isConsidering = false;
     isStartFound = false;
     isEndFound = false;  %probably redundant
     gapCount = 0;
+    lineCount = 0;
     
     %what to do if theta==pi/2? y always NaN, lines get no val;
     %separate case, iterate using y instead, is a vertical line
@@ -52,18 +56,34 @@ for i=1:nLines
             %there are gaps
             %instead of Im(y,x)~=0
             if(Im(y,x)>threshold)
-                if(isStartFound==false)
+                if(isConsidering==false)
+                    %found a possible starting point
                     lines(i).start = [y x];
                     lines(i).end = [y x];
-                    isStartFound = true;
-                elseif(isStartFound && isEndFound==false)
+                    isConsidering = true;
+                elseif(isConsidering && isStartFound==false)
+                    %checking if line is long enough to be a line segment
+                    lines(i).end = [y x];
+                    lineCount = lineCount + 1;
+                    if(lineCount>lineThreshold)
+                        isStartFound = true;
+                    end
+                elseif(isConsidering && isStartFound && isEndFound==false)
+                    %looking for end
                     lines(i).end = [y x];
                     gapCount = 0;
                 end
-            elseif(isStartFound)
+            elseif(isConsidering)
                 gapCount = gapCount + 1;
-                if(gapCount>gapThreshold)
-                    break;  %consider next set of rho theta
+                if(gapCount>=gapThreshold)
+                    if(isStartFound==false)
+                        %still looking for start of line segment
+                        lines(i).start = lines(i).end;
+                        lineCount = 0;
+                    else
+                        %that's it, end of line segment
+                        break;  %consider next set of rho theta
+                    end
                 end
             end
               
@@ -79,9 +99,11 @@ for j=1:idx
     rho = lineRho(failedCalc(j));
     theta = lineTheta(failedCalc(j));
     
+    isConsidering = false;
     isStartFound = false;
-    isEndFound = false;
+    isEndFound = false;  %probably redundant
     gapCount = 0;
+    lineCount = 0;
     
     %for every rho-theta pair, obtain line in y-x space
     %iterating along line in Im
@@ -102,17 +124,34 @@ for j=1:idx
             %should be true while theoretical line is on real line
             %instead of Im(y,x)~=0            
             if(Im(y,x)>threshold)
-                if(isStartFound==false)
+                if(isConsidering==false)
+                    %found a possible starting point
                     lines(failedCalc(j)).start = [y x];
-                    isStartFound = true;
-                elseif(isStartFound && isEndFound==false)
+                    lines(failedCalc(j)).end = [y x];
+                    isConsidering = true;
+                elseif(isConsidering && isStartFound==false)
+                    %checking if line is long enough to be a line segment
+                    lines(failedCalc(j)).end = [y x];
+                    lineCount = lineCount + 1;
+                    if(lineCount>lineThreshold)
+                        isStartFound = true;
+                    end
+                elseif(isConsidering && isStartFound && isEndFound==false)
+                    %looking for end
                     lines(failedCalc(j)).end = [y x];
                     gapCount = 0;
                 end
-            elseif(isStartFound)
+            elseif(isConsidering)
                 gapCount = gapCount + 1;
-                if(gapCount>gapThreshold)
-                    break;  %consider next set of rho theta
+                if(gapCount>=gapThreshold)
+                    if(isStartFound==false)
+                        %still looking for start of line segment
+                        lines(failedCalc(j)).start = lines(failedCalc(j)).end;
+                        lineCount = 0;
+                    else
+                        %that's it, end of line segment
+                        break;  %consider next set of rho theta
+                    end
                 end
             end
               
