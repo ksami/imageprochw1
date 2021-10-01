@@ -6,26 +6,32 @@ function [H] = myHoughTransform(Im, threshold, rhoRes, thetaRes)
 % axes respectively. H is the Hough transform accumulator that contains the number
 % of votes for all the possible lines passing through the image.
 
-rangeTheta = 0:thetaRes:pi;
+[m, n] = size(Im); % for finding max rho
+rhoMax = sqrt(m^2 + n^2); % maximum distance possible
+thetaRes = thetaRes * (180/pi); % rescale theta resolution to degrees for now
 
-[row, col] = size(Im);
-H = zeros(((2*(row+col))/rhoRes)+1, (pi/thetaRes)+1);
+% bins of accumulator for quantization
+rhoScale = ceil(-rhoMax):rhoRes:ceil(rhoMax); % (0, rhoMax)
+thetaScale = -90:thetaRes:90; %  (-pi/2, pi/2)
+rhoLen = numel(rhoScale); % rows in accumulator
+thetaLen = numel(thetaScale); % columns in accumulator
+H = zeros(rhoLen, thetaLen); % initialize accumulator
 
-rhoOffset = row+col;
+[edge_xIdx, edge_yIdx] = find(Im > threshold); % find non-zero indices of edges in image
 
-for y=1:row
-    for x=1:col
-        %based on threshold, Im must be double type
-        if(Im(y,x) > threshold)
-            %calculate rho value for each theta value
-            %increase vote count at every rho-theta pair
-            for theta=rangeTheta
-                rho = x*sin(theta) - y*cos(theta);  % -(row+col)<rho<row+col, 0<theta<pi
-                
-                rho = floor((rho + rhoOffset)/rhoRes) + 1;  % ((-(row+col)+(row+col))/rhoRes) +1 == 1<rho<((2*(row+col))/rhoRes) +1
-                thet = floor(theta/thetaRes) + 1;  % 1<theta<(pi/thetaRes)+1
-                H(rho, thet) = H(rho, thet) + 1;
-            end
-        end
+% populate accumulator
+for i = 1:numel(edge_xIdx)
+    for thetaIdx = 1:thetaLen % loop through thetaScale
+       rhoCurrent = edge_yIdx(i)*cosd(thetaScale(thetaIdx)) + edge_xIdx(i)*sind(thetaScale(thetaIdx));
+       rhoCurrent = floor(rhoCurrent/rhoRes) * rhoRes; % quantize to rho's resolution into bins
+       thetaCurrent = floor(thetaScale(thetaIdx)/thetaRes) * thetaRes; % quantize to theta's resolution into bins
+       thetaBinIdx = find(thetaScale==thetaCurrent); % find quantized indices
+       rhoBinIdx = find(rhoScale==rhoCurrent);
+       H( rhoBinIdx, thetaBinIdx ) = H( rhoBinIdx, thetaBinIdx ) + 1; % increment element in accumulator
     end
+end
+% end of accumulator population
+
+thetaScale = thetaScale .* (pi/180); % convert back to radians for output
+        
 end
